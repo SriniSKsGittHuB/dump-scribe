@@ -61,7 +61,29 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				analyzer: {
+					bg: 'hsl(var(--analyzer-bg))',
+					surface: 'hsl(var(--analyzer-surface))',
+					elevated: 'hsl(var(--analyzer-elevated))',
+					border: 'hsl(var(--analyzer-border))',
+					accent: 'hsl(var(--analyzer-accent))',
+					success: 'hsl(var(--analyzer-success))',
+					warning: 'hsl(var(--analyzer-warning))',
+					error: 'hsl(var(--analyzer-error))',
+					'text-primary': 'hsl(var(--analyzer-text-primary))',
+					'text-secondary': 'hsl(var(--analyzer-text-secondary))',
+					'text-muted': 'hsl(var(--analyzer-text-muted))'
 				}
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-surface': 'var(--gradient-surface)',
+				'gradient-accent': 'var(--gradient-accent)'
+			},
+			boxShadow: {
+				'elevated': 'var(--shadow-elevated)',
+				'glow': 'var(--shadow-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

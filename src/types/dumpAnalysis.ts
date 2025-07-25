@@ -6,6 +6,15 @@ export interface DumpFile {
   architecture: 'x86' | 'x64' | 'arm64';
 }
 
+export interface MemoryRegion {
+  startAddress: string;
+  endAddress: string;
+  size: string;
+  protection: string;
+  type: 'image' | 'mapped' | 'private' | 'reserved';
+  contents?: string; // hex dump
+}
+
 export interface ExceptionInfo {
   code: string;
   address: string;
@@ -14,6 +23,39 @@ export interface ExceptionInfo {
   function?: string;
   offset?: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
+  registers?: RegisterState;
+  faultingInstruction?: string;
+  disassemblyContext?: string[];
+  memoryRegions?: MemoryRegion[];
+  instructionDecode?: string;
+  memoryProtection?: string;
+}
+
+export interface RegisterState {
+  eax?: string;
+  ebx?: string;
+  ecx?: string;
+  edx?: string;
+  esp?: string;
+  ebp?: string;
+  eip?: string;
+  rax?: string;
+  rbx?: string;
+  rcx?: string;
+  rdx?: string;
+  rsp?: string;
+  rbp?: string;
+  rip?: string;
+  flags?: string;
+}
+
+export interface WaitObject {
+  type: 'mutex' | 'event' | 'critical_section' | 'semaphore' | 'unknown';
+  handle: string;
+  name?: string;
+  ownerThread?: number;
+  waitTime: number;
+  address: string;
 }
 
 export interface StackFrame {
@@ -24,6 +66,11 @@ export interface StackFrame {
   sourceFile?: string;
   lineNumber?: number;
   hasSymbols: boolean;
+  framePointer?: string;
+  instructionPointer?: string;
+  parameters?: string[];
+  locals?: Record<string, string>;
+  disassembly?: string;
 }
 
 export interface ThreadInfo {
@@ -37,6 +84,12 @@ export interface ThreadInfo {
   userTime: number;
   waitReason?: string;
   isMainThread: boolean;
+  registers?: RegisterState;
+  waitObjects?: WaitObject[];
+  stackBase?: string;
+  stackLimit?: string;
+  lastError?: string;
+  teb?: string; // Thread Environment Block
 }
 
 export interface ModuleInfo {
@@ -78,6 +131,49 @@ export interface ProcessInfo {
   peakVirtualSize: string;
 }
 
+export interface TechnicalEvidence {
+  type: 'register_state' | 'memory_pattern' | 'instruction_analysis' | 'thread_state' | 'heap_corruption';
+  description: string;
+  technicalDetails: string;
+  rawData?: string;
+  confidence: number;
+  memoryAddress?: string;
+}
+
+export interface DeadlockInfo {
+  detected: boolean;
+  cycles?: Array<{
+    threads: number[];
+    resources: string[];
+    evidence: TechnicalEvidence[];
+  }>;
+}
+
+export interface HeapAnalysis {
+  corruptionDetected: boolean;
+  corruptionPatterns?: string[];
+  evidence?: TechnicalEvidence[];
+  allocationsCount?: number;
+  leakedBytes?: number;
+  heapBlocks?: Array<{
+    address: string;
+    size: string;
+    status: 'allocated' | 'free' | 'corrupted';
+  }>;
+}
+
+export interface StackAnalysis {
+  overflowDetected: boolean;
+  stackDepth?: number;
+  guardPageStatus?: string;
+  evidence?: TechnicalEvidence[];
+  stackRange?: {
+    base: string;
+    limit: string;
+    current: string;
+  };
+}
+
 export interface CrashAnalysis {
   crashType: string;
   severity: 'critical' | 'high' | 'medium' | 'low';
@@ -88,6 +184,11 @@ export interface CrashAnalysis {
   deadlockDetected: boolean;
   memoryCorruption: boolean;
   stackOverflow: boolean;
+  evidence: TechnicalEvidence[];
+  deadlockInfo?: DeadlockInfo;
+  heapAnalysis?: HeapAnalysis;
+  stackAnalysis?: StackAnalysis;
+  alternativeExplanations?: string[];
 }
 
 export interface AnalysisData {
